@@ -1,11 +1,16 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:windowActivityTransitions" tools:ignore="NewApi">true</item>
+<!--TODO Above item not available in api19-->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-    </style>
 
+    </style>
+    <style name="Toolbar.TitleText" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="android:textSize">30sp</item>
+</style>
 </resources>
