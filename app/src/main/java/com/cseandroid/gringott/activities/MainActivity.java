@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         welcome_textview = findViewById(R.id.welcome_messgae_textview);
         fab_add = findViewById(R.id.add_entry);
-        userName = "TestUser";
+        userName = getIntent().getStringExtra("uname");
         Log.v("lifecycle", "onCreateView");
         welcome_textview.setText("Welcome " + userName);
 

@@ -12,6 +12,16 @@
 
     </style>
 
+
+    <style name="AlertDialogCustom" parent="@android:style/Theme.Dialog">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:background">@color/bgColorMain</item>
+        <item name="android:buttonStyle">@drawable/button_shape</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+
     <style name="Toolbar.TitleText" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:textSize">30sp</item>
     </style>

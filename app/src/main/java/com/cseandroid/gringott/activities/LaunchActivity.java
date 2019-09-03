@@ -1,8 +1,11 @@
 package com.cseandroid.gringott.activities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -34,21 +37,62 @@ ProgressBar progressBar;
         new LaunchTask().execute();
     }
 
-    class LaunchTask extends AsyncTask<Void, Void, Void> {
+    class LaunchTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
 
-       @Override
-       protected Void doInBackground(Void... voids) {
+        @Override
+       protected Boolean doInBackground(Void... voids) {
            try {
                sleep(2000);
-               Intent intent = new Intent(LaunchActivity.this, PinActivity.class);
-               startActivity(intent);
            } catch (InterruptedException e) {
                e.printStackTrace();
            }
-           return null;
+           if(isNetworkAvailable())
+           {
+               return true;
+           }
+           else
+           {
+               return false;
+           }
+
        }
 
-   }
+        @Override
+        protected void onPostExecute(Boolean netAvl) {
+            super.onPostExecute(netAvl);
+            progressBar.setVisibility(View.INVISIBLE);
+            if(netAvl)
+            {
+                Intent intent = new Intent(LaunchActivity.this, PinActivity.class);
+                startActivity(intent);
+            }
+            else {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(LaunchActivity.this, R.style.AlertDialogCustom));
+                alertDialog.setCancelable(false);
+                alertDialog.setMessage("Turn on Internet or Close the Appplication!");
+                alertDialog.setPositiveButton("RETRY", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        new LaunchTask().execute();
+                    }
+                });
+                alertDialog.setNegativeButton("CLOSE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                });
+                alertDialog.setTitle("No Internet Connection");
+                alertDialog.show();
+            }
+
+        }
+    }
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager

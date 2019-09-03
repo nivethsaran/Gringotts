@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import androidx.biometric.BiometricPrompt;
@@ -16,6 +17,7 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -26,6 +28,14 @@ import android.widget.Toast;
 
 
 import com.cseandroid.gringott.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -38,12 +48,28 @@ public class AuthenticationActivity extends AppCompatActivity{
     CheckBox show_password;
    public BiometricPrompt biometricPrompt;
    FingerprintManager fingerprintManager;
+    private ProgressDialog dialog;
+    private FirebaseAuth mAuth;
+    FirebaseFirestore db;
+    FirebaseUser currentUser;
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth=FirebaseAuth.getInstance();
+        db= FirebaseFirestore.getInstance();
+        currentUser = mAuth.getCurrentUser();
+
+    }
+
 
     //@RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
+        dialog = new ProgressDialog(AuthenticationActivity.this);
         login_button = findViewById(R.id.login_button);
         signup_textview = findViewById(R.id.signup_textview);
         forgot_textview = findViewById(R.id.forgot_textview);
@@ -65,16 +91,51 @@ public class AuthenticationActivity extends AppCompatActivity{
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (username.getText().toString().equals("test") && password.getText().toString().equals("test")) {
-                    Intent i = new Intent(AuthenticationActivity.this, MainActivity.class);
-                    i.putExtra("uname", username.getText().toString());
-                    startActivity(i);
+                dialog.setMessage("Doing something, please wait.");
+                dialog.show();
+                if (!username.getText().toString().equals("") && !password.getText().toString().equals("")) {
+                        mAuth.signInWithEmailAndPassword(username.getText().toString(),password.getText().toString())
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(task.isSuccessful())
+                                {
+                                    currentUser=mAuth.getCurrentUser();
+                                    DocumentReference docRef = db.collection("users").document(currentUser.getUid());
+                                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document = task.getResult();
+                                                Intent i = new Intent(AuthenticationActivity.this, MainActivity.class);
+                                                i.putExtra("uname",document.get("fullname").toString());
+                                                if (dialog.isShowing()) {
+                                                    dialog.dismiss();
+                                                }
+                                                startActivity(i);
+
+                                            } else {
+                                                Log.d("FIREBASE", "get failed with ", task.getException());
+                                            }
+                                        }
+                                    });
+
+
+                                }
+                                else
+                                {
+                                    Toast.makeText(getApplicationContext(),"Invalid Credentials",Toast.LENGTH_SHORT);
+                                }
+                            }
+                        });
+
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Invalid Credantials", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        signup_textview.setOnClickListener(new View.OnClickListener() {
+        forgot_textview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                Intent intent = new Intent(AuthenticationActivity.this, SignUpActivity.class);
@@ -158,6 +219,14 @@ public class AuthenticationActivity extends AppCompatActivity{
 //    }
 
 
+        });
+
+        signup_textview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(AuthenticationActivity.this,SignUpActivity.class);
+                startActivity(intent);
+            }
         });
     }
 
