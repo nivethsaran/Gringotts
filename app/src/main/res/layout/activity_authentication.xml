@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:background="#373640"
+    android:background="@color/bgColorMain"
     android:orientation="vertical"
     tools:context=".activities.AuthenticationActivity">
     <ImageView
@@ -21,16 +21,17 @@
         android:layout_height="wrap_content"
         android:text="Gringotts"
         android:fontFamily="@font/indieflower"
-        android:textColor="#faf9f9"
+        android:textColor="@color/colorText"
         android:textSize="40sp"
         />
+
     <EditText
         android:id="@+id/email_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColorHint="#929aab"
         android:paddingVertical="20dp"
-        android:textColor="#faf9f9"
+        android:textColor="@color/colorText"
         android:layout_marginHorizontal="20sp"
         android:freezesText="true"
         android:ems="10"
@@ -42,13 +43,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColorHint="#929aab"
-        android:textColor="#faf9f9"
+        android:textColor="@color/colorText"
         android:paddingVertical="20dp"
         android:layout_marginHorizontal="20sp"
         android:freezesText="true"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword" />
+    <CheckBox
+        android:id="@+id/show_password"
+        android:layout_marginHorizontal="20sp"
+        android:paddingHorizontal="5sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Password"
+        android:textColor="@color/colorText"
+        android:layout_gravity="start"
+        android:gravity="center_vertical"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
@@ -60,7 +71,7 @@
             android:paddingHorizontal="10dp"
             android:layout_weight="0.5"
             android:layout_height="wrap_content"
-            android:textColor="#faf9f9"
+            android:textColor="@color/colorText"
             android:text="Forgot Password?" />
         <TextView
             android:id="@+id/signup_textview"
@@ -71,7 +82,7 @@
             android:gravity="right"
             android:layout_height="wrap_content"
             android:padding="20dp"
-            android:textColor="#faf9f9"
+            android:textColor="@color/colorText"
             android:text="Already a user?" />
 
     </LinearLayout>
@@ -83,6 +94,10 @@
         android:paddingHorizontal="40dp"
         android:fontFamily="@font/indieflower"
         android:textSize="30dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:shadowRadius="5"
+        android:shadowColor="@color/colorAccent"
         android:layout_marginVertical="30dp"
         android:background="@drawable/button_shape"
         android:text="LOGIN" />

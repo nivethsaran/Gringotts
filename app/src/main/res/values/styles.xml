@@ -4,13 +4,39 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:windowActivityTransitions" tools:ignore="NewApi">true</item>
-<!--TODO Above item not available in api19-->
+        <!--TODO Above item not available in api19-->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorSecondary">#fff</item>
 
     </style>
+
     <style name="Toolbar.TitleText" parent="Theme.AppCompat.Light.NoActionBar">
-    <item name="android:textSize">30sp</item>
-</style>
+        <item name="android:textSize">30sp</item>
+    </style>
+    <style name="TitleFont" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:font" tools:targetApi="o">@font/indieflower</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppThemeSecondary" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowActivityTransitions" tools:ignore="NewApi">true</item>
+        <!--TODO Above item not available in api19-->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorSecondary">#fff</item>
+
+    </style>
 </resources>

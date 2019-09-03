@@ -12,103 +12,14 @@ import android.widget.EditText;
 
 import com.cseandroid.gringott.R;
 
-public class NewEntryActivity extends AppCompatActivity implements View.OnClickListener {
-    EditText et1,et2,et3,et4;
-    Button b1,b2,b3;
-    CheckBox b4;
-    String activityType;
+public class NewEntryActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_entry);
 
-        Intent typeIntent=getIntent();
-        activityType=typeIntent.getStringExtra("type");
-
-
-        et1=findViewById(R.id.fbet1);
-        et2=findViewById(R.id.fbet2);
-        et3=findViewById(R.id.fbet3);
-        et4=findViewById(R.id.fbet4);
-        b1=findViewById(R.id.button1);
-        b2=findViewById(R.id.button2);
-        b3=findViewById(R.id.button3);
-        b4=findViewById(R.id.button4);
-
-        b4.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-            }
-        });
-
-        b1.setOnClickListener(this);
-        b2.setOnClickListener(this);
-        b3.setOnClickListener(this);
-        if(activityType.equals("add"))
-        {
-            et1.setText("");
-            et2.setText("");
-            et4.setText("");
-            b2.setVisibility(View.VISIBLE);
-            b1.setVisibility(View.INVISIBLE);
-            b3.setVisibility(View.INVISIBLE);
-
-        }
-        else if (activityType.equals("edit"))
-        {
-            String uname=typeIntent.getStringExtra("username");
-            String sitename=typeIntent.getStringExtra("site");
-            et1.setText(uname);
-            et2.setText("from database");
-            et4.setText(sitename);
-            b3.setVisibility(View.INVISIBLE);
-            b1.setVisibility(View.VISIBLE);
-            b2.setVisibility(View.INVISIBLE);
-        }
-        else if (activityType.equals("view"))
-        {String uname=typeIntent.getStringExtra("username");
-            String sitename=typeIntent.getStringExtra("site");
-            et1.setText(uname);
-            et2.setText("from database");
-            et4.setText(sitename);
-            et1.setEnabled(false);
-            et2.setEnabled(false);
-            et4.setEnabled(false);
-            b3.setVisibility(View.VISIBLE);
-            b2.setVisibility(View.INVISIBLE);
-            b1.setVisibility(View.INVISIBLE);
-        }
-
-
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == b1.getId())
-        {
-            Intent intent=new Intent(NewEntryActivity.this,MainActivity.class);
-            startActivity(intent);
-//            ((EditText) findViewById(R.id.fbet1)).getText().clear();
-//            ((EditText) findViewById(R.id.fbet2)).getText().clear();
-//            ((EditText) findViewById(R.id.fbet3)).getText().clear();
-        }
-        if(v.getId()==b3.getId())
-        {
-            et1.setEnabled(true);
-            et2.setEnabled(true);
-            et4.setEnabled(true);
-            b1.setVisibility(View.VISIBLE);
-            b3.setVisibility(View.INVISIBLE);
-            b2.setVisibility(View.INVISIBLE);
-
-        }
-            //if(PasswordStrength.calculateStrength(mViewData.mRegisterData.password). getValue() < PasswordStrength.STRONG.getValue())
-//{
-//    message = "Password should contain min of 6 characters and at least 1 lowercase, 1 uppercase and 1 numeric value";
-//    return null;
-//}
     }
 
 

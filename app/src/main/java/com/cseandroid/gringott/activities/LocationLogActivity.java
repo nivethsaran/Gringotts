@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.cseandroid.gringott.R;
 
@@ -24,6 +26,15 @@ public class LocationLogActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_log);
+
+        Toolbar toolbar=findViewById(R.id.settings_toolbar);
+        toolbar.setNavigationIcon(R.drawable.back_arrow);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
         disp=findViewById(R.id.textView3);
         Bundle b=getIntent().getExtras();
         String ume=b.getString("uname");

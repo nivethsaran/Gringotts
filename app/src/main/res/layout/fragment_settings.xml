@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="@color/bgColorMain"
+    tools:context=".fragments.SettingsFragment">
+<Toolbar
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/settings_toolbar">
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Settings"
+    android:textColor="@color/colorText"
+    android:textSize="20sp"/>
+</Toolbar>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="3sp"
+        
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Enable Fingerprint Authentication"
+            android:textColor="@color/colorText"
+            android:textSize="24sp"
+            android:fontFamily="sans-serif"
+            />
+        
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorTextHint"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="3sp"
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sync Data Online"
+            android:textColor="@color/colorText"
+            android:textSize="24sp"
+            android:fontFamily="sans-serif"
+            />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorTextHint"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="3sp"
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Logout if Inactive(1 mins)"
+            android:textColor="@color/colorText"
+            android:textSize="24sp"
+            android:fontFamily="sans-serif"
+            />
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorTextHint"/>
+</LinearLayout>

@@ -2,7 +2,11 @@ package com.cseandroid.gringott.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -20,27 +24,37 @@ ProgressBar progressBar;
 
         progressBar=findViewById(R.id.progress_bar_circular);
         progressBar.setVisibility(View.VISIBLE);
-        try {
-            sleep(1000);
-            Intent intent=new Intent(LaunchActivity.this,AuthenticationActivity.class);
-            startActivity(intent);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        //new LaunchTask().execute();
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        progressBar=findViewById(R.id.progress_bar_circular);
-        progressBar.setVisibility(View.VISIBLE);
-        try {
-            sleep(1000);
-            Intent intent=new Intent(LaunchActivity.this,AuthenticationActivity.class);
-            startActivity(intent);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        new LaunchTask().execute();
     }
+
+    class LaunchTask extends AsyncTask<Void, Void, Void> {
+
+       @Override
+       protected Void doInBackground(Void... voids) {
+           try {
+               sleep(2000);
+               Intent intent = new Intent(LaunchActivity.this, PinActivity.class);
+               startActivity(intent);
+           } catch (InterruptedException e) {
+               e.printStackTrace();
+           }
+           return null;
+       }
+
+   }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
 }

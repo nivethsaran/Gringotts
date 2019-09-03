@@ -20,34 +20,34 @@ TextView login;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        ed_un=findViewById(R.id.username_edt);
-        ed_pw=findViewById(R.id.pass_edt);
-        signup=findViewById(R.id.signup_button);
-        login=findViewById(R.id.login_redirect);
-
-
-
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(SignUpActivity.this,AuthenticationActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        signup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(ed_un.getText().toString().equals("")||ed_pw.getText().toString().equals(""))
-                {
-                    Toast.makeText(getApplicationContext(),"Enter valid Credentials",Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    Intent intent=new Intent(SignUpActivity.this,AuthenticationActivity.class);
-                    startActivity(intent);
-                }
-            }
-        });
+//        ed_un=findViewById(R.id.username_edt);
+//        ed_pw=findViewById(R.id.pass_edt);
+//        signup=findViewById(R.id.signup_button);
+//        login=findViewById(R.id.login_redirect);
+//
+//
+//
+//        login.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent=new Intent(SignUpActivity.this,AuthenticationActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+//
+//        signup.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(ed_un.getText().toString().equals("")||ed_pw.getText().toString().equals(""))
+//                {
+//                    Toast.makeText(getApplicationContext(),"Enter valid Credentials",Toast.LENGTH_SHORT).show();
+//                }
+//                else
+//                {
+//                    Intent intent=new Intent(SignUpActivity.this,AuthenticationActivity.class);
+//                    startActivity(intent);
+//                }
+//            }
+//        });
     }
 }

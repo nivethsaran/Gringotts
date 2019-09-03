@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cseandroid.gringott.R;
 
@@ -52,9 +53,16 @@ public class AboutActivity extends AppCompatActivity
     public void onClick(View view) {
 
         if (view.getId() == browseButton.getId()) {
-            Intent intent = new Intent (Intent.ACTION_VIEW , Uri.parse("mailto:" + "gringot@gmail.com"));
-            intent.putExtra(Intent.EXTRA_SUBJECT, "FEEDBACK");
-            startActivity(intent);
+            try {
+                Intent intent = new Intent (Intent.ACTION_VIEW , Uri.parse("mailto:" + "gringot@gmail.com"));
+                intent.putExtra(Intent.EXTRA_SUBJECT, "FEEDBACK");
+                startActivity(intent);
+            }
+            catch (Exception e)
+            {
+                Toast.makeText(getApplicationContext(),"No Email App Found",Toast.LENGTH_SHORT).show();
+            }
+
         }
 
         if (view.getId() == callbutton.getId()) {
