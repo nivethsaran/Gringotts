@@ -13,6 +13,15 @@
     </style>
 
 
+    <style name="PreferenceScreen" parent="Theme.AppCompat">
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textColorPrimary">@color/colorText</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/bgColorMain</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:background">@color/bgColorMain</item>
+    </style>
+
     <style name="AlertDialogCustom" parent="@android:style/Theme.Dialog">
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:typeface">monospace</item>

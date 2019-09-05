@@ -34,10 +34,7 @@
         android:id="@+id/menu_about"
         android:icon="@drawable/baseline_power_settings_new_black_18dp"
         />
-    <item app:showAsAction="never"
-        android:id="@+id/menu_share"
-        android:title="Tell Your Friends"
-        />
+
 
 
 </menu>

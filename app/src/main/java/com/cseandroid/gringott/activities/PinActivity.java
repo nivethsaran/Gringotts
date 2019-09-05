@@ -1,6 +1,7 @@
 package com.cseandroid.gringott.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -28,7 +29,7 @@ import com.cseandroid.gringott.R;
 
 public class PinActivity extends AppCompatActivity {
     EditText edp1, edp2, edp3, edp4;
-    TextView tv_desc, clear_tv, error_tv;
+    TextView tv_command, clear_tv, error_tv;
     Button save, go;
     Vibrator vibrator;
 
@@ -44,7 +45,7 @@ public class PinActivity extends AppCompatActivity {
 
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
-        tv_desc = findViewById(R.id.tv_desc);
+        tv_command = findViewById(R.id.tv_command);
 //        clear_tv=findViewById(R.id.clear_tv);
         error_tv = findViewById(R.id.error_tv);
 
@@ -54,12 +55,16 @@ public class PinActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("mycredentials", Context.MODE_PRIVATE);
         String name = sp.getString("pin", "XXXX");
 
+
+//        SharedPreferences sp_settings=PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//        Toast.makeText(getApplicationContext(),Boolean.toString(sp_settings.getBoolean("sync",false)),Toast.LENGTH_SHORT).show();
+
         if (name.equals("XXXX")) {
-            tv_desc.setText("Enter New Pin" + name);
+            tv_command.setText("Enter New Pin to get started");
             save.setVisibility(View.VISIBLE);
             go.setVisibility(View.INVISIBLE);
         } else {
-            tv_desc.setText("Enter Your Pin" + name);
+            tv_command.setText("Enter Your Pin");
             go.setVisibility(View.VISIBLE);
             save.setVisibility(View.INVISIBLE);
         }
@@ -170,6 +175,7 @@ public class PinActivity extends AppCompatActivity {
                 if (pin.equals(name)) {
                     Toast.makeText(getApplicationContext(), "YESSS", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(PinActivity.this, AuthenticationActivity.class);
+
                     startActivity(intent);
                 } else {
                     Toast.makeText(getApplicationContext(), "NOOOO", Toast.LENGTH_SHORT).show();

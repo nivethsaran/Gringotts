@@ -1,14 +1,18 @@
 package com.cseandroid.gringott.activities;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,78 +23,69 @@ import android.widget.Toast;
 
 import com.cseandroid.gringott.R;
 
-public class AboutActivity extends AppCompatActivity
-        implements AdapterView.OnItemClickListener, View.OnClickListener {
-    String items[]=
-            {"Z.Niveth", "C.Vikram", "R.Rajsekar", "S.Venkat raghavan"
-            };
-    GridView lv;
-    ArrayAdapter<String> ad;
-    TextView browseButton;
-    TextView callbutton;
-
-
-
+public class AboutActivity extends AppCompatActivity {
+    ListView listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_about);
-        browseButton = findViewById(R.id.bb);
-        callbutton=findViewById(R.id.cb);
-        browseButton.setOnClickListener(this);
-        callbutton.setOnClickListener(this);
+        listView=findViewById(R.id.lv);
+        String[] arr={"FAQ","Developers","Terms of Use","Privacy Policy","Open Source Licences","Tell Your Friends"};
+        ArrayAdapter<String> adapter=new ArrayAdapter<String>(AboutActivity.this,R.layout.support_simple_spinner_dropdown_item,arr){
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view= super.getView(position, convertView, parent);
+                TextView textView=(TextView) view.findViewById(android.R.id.text1);
 
-        lv = findViewById(R.id.lv);
+                /*YOUR CHOICE OF COLOR*/
+                textView.setTextColor(Color.WHITE);
+                return view;
+            }
+        };
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                TextView textView=(TextView)view;
+                if(textView.getText().toString().equals("Privacy Policy"))
+                {
+                    String url="https://www.privacypolicygenerator.info/live.php?token=XbWm9LsHctq4WJGzajKjHVJatlTE5UsZ";
+                    Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+                    startActivity(intent);
+                }
+                else if(textView.getText().toString().equals("Terms of Use"))
+                {
+                    String url="https://www.termsandconditionsgenerator.com/live.php?token=Y8ltBKFWicWRtwfOi5EOCDbaQcEfr6YU";
+                    Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+                    startActivity(intent);
+                }
+                else if(textView.getText().toString().equals("FAQ"))
+                {
+                    Intent intent=new Intent(AboutActivity.this,HelpActivity.class);
+                    startActivity(intent);
+                }
+                else if(textView.getText().toString().equals("Open Source Licences"))
+                {
+                    String url="https://github.com/nivethsaran/PasswordManager/blob/master/LICENSE.txt";
+                    Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+                    startActivity(intent);
+                }
+                else if(textView.getText().toString().equals("Tell Your Friends"))
+                {
+                    Intent intent = new Intent(getApplicationContext(), ShareActivity.class);
+                    startActivity(intent);
+                }
+                else if(textView.getText().toString().equals("Developers"))
+                {
+                    Intent intent = new Intent(getApplicationContext(), DevelopersActivity.class);
+                    startActivity(intent);
+                }
 
-        ad = new ArrayAdapter<String>
-                (this,R.layout.list_about,
-                        R.id.tv,items);
-
-        lv.setAdapter(ad);
-        lv.setOnItemClickListener(this);
+            }
+        });
 
     }
-    public void onClick(View view) {
-
-        if (view.getId() == browseButton.getId()) {
-            try {
-                Intent intent = new Intent (Intent.ACTION_VIEW , Uri.parse("mailto:" + "gringot@gmail.com"));
-                intent.putExtra(Intent.EXTRA_SUBJECT, "FEEDBACK");
-                startActivity(intent);
-            }
-            catch (Exception e)
-            {
-                Toast.makeText(getApplicationContext(),"No Email App Found",Toast.LENGTH_SHORT).show();
-            }
-
-        }
-
-        if (view.getId() == callbutton.getId()) {
-            Intent j = new Intent
-                    (Intent.ACTION_CALL);
-            j.setData
-                    (Uri.parse("tel:" + "7339065577"));
-
-            if (ActivityCompat.checkSelfPermission
-                    (this, Manifest.permission.CALL_PHONE)
-                    != PackageManager.PERMISSION_GRANTED)
-            {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.CALL_PHONE},
-                        123);
-                return;
-            }
-
-            startActivity(j);
-
-        }
-
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView,
-                            View view, int i, long l) {
-    }
-
 
 }

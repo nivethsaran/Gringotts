@@ -9,11 +9,18 @@
     android:orientation="vertical"
     tools:context=".activities.PinActivity">
 
+    <ImageView
+        android:layout_width="72sp"
+        android:layout_height="72sp"
+        android:layout_margin="5sp"
+        android:layout_gravity="center"
+        android:src="@drawable/fingerprint"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:id="@+id/tv_desc"
+        android:textSize="24sp"
         android:text="Welcome to Gringott Password Manager!!!"
         android:textAlignment="center"
         android:textColor="@color/colorText" />
@@ -27,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Enter Pin"
+        android:id="@+id/tv_command"
         android:textAlignment="center"
         android:textColor="@color/colorText" />
 
@@ -127,5 +135,15 @@
             android:text="SAVE" />
 
     </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/forgotpin_textview"
+        android:layout_width="wrap_content"
+        android:paddingHorizontal="10dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorText"
+        android:text="Forgot Pin?" />
 
 </LinearLayout>

@@ -3,15 +3,22 @@ package com.cseandroid.gringott.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.hardware.fingerprint.FingerprintManager;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.biometric.BiometricPrompt;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +30,19 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.cseandroid.gringott.R;
+import com.cseandroid.gringott.activities.AuthenticationActivity;
 import com.cseandroid.gringott.activities.MainActivity;
 import com.cseandroid.gringott.activities.NewEntryActivity;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,11 +53,23 @@ public class NewEntryFragment extends Fragment {
     CheckBox b4;
     String activityType;
     SQLiteDatabase db;
+    private FirebaseAuth mAuth;
+    FirebaseFirestore db_online;
+    FirebaseUser currentUser;
+    public BiometricPrompt biometricPrompt;
+    FingerprintManager fingerprintManager;
 
     public NewEntryFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth = FirebaseAuth.getInstance();
+        db_online = FirebaseFirestore.getInstance();
+        currentUser = mAuth.getCurrentUser();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,13 +78,6 @@ public class NewEntryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_new_entry, container, false);
         Intent typeIntent = getActivity().getIntent();
         activityType = typeIntent.getStringExtra("type");
-//        Toast.makeText(getContext(),typeIntent.getStringExtra("entry"),Toast.LENGTH_SHORT).show();
-        db = getActivity().openOrCreateDatabase
-                ("PasswordDB", Context.MODE_PRIVATE, null);
-        db.execSQL
-                ("CREATE TABLE IF NOT EXISTS " +
-                        "password(entryname VARCHAR PRIMARY KEY," +
-                        "websiteurl VARCHAR,username VARCHAR,password VARCHAR,note VARCHAR,lastmodified VARCHAR);");
 
 
         ed1 = view.findViewById(R.id.ed1);
@@ -71,12 +94,64 @@ public class NewEntryFragment extends Fragment {
 
         b4.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+
+
+                SharedPreferences sp_settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 if (isChecked) {
-                    ed4.setTransformationMethod(null);
+                    if (sp_settings.getString("fingerprint", "none").equals("dp")) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            Executor executor = Executors.newSingleThreadExecutor();
+                            biometricPrompt = new BiometricPrompt(getActivity(), executor, new BiometricPrompt.AuthenticationCallback() {
+                                @Override
+                                public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                                    super.onAuthenticationError(errorCode, errString);
+                                }
+
+                                @Override
+                                public void onAuthenticationFailed() {
+                                    super.onAuthenticationFailed();
+                                }
+
+                                @Override
+                                public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
+                                    super.onAuthenticationSucceeded(result);
+                                    if (isChecked) {
+                                        ed4.setTransformationMethod(null);
+                                    } else {
+                                        ed4.setTransformationMethod(new PasswordTransformationMethod());
+                                    }
+
+
+                                }
+                            });
+
+                            BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                                    .setTitle("View Password")
+                                    .setNegativeButtonText("Dismiss")
+                                    .build();
+
+                            biometricPrompt.authenticate(promptInfo);
+                        } else {
+                            if (isChecked) {
+                                ed4.setTransformationMethod(null);
+                            } else {
+                                ed4.setTransformationMethod(new PasswordTransformationMethod());
+                            }
+                        }
+                    } else {
+                        if (isChecked) {
+                            ed4.setTransformationMethod(null);
+                        } else {
+                            ed4.setTransformationMethod(new PasswordTransformationMethod());
+                        }
+                    }
+
                 } else {
                     ed4.setTransformationMethod(new PasswordTransformationMethod());
                 }
+
+
             }
         });
 
@@ -93,18 +168,42 @@ public class NewEntryFragment extends Fragment {
                     String notet = ed5.getText().toString();
                     String timet = Long.toString(System.currentTimeMillis());
 
-                    try {
-                        db.execSQL("update password set values('" + entrynamet + "','" + websiteurlt + "','" + usernamet + "','" + passwordt + "','" + notet + "','" + timet + "')");
-                        ed1.setText("");
-                        ed2.setText("");
-                        ed3.setText("");
-                        ed4.setText("");
-                        ed5.setText("");
-                    } catch (Exception e) {
-                        Toast.makeText(getActivity(), "Duplicate Data", Toast.LENGTH_SHORT).show();
-                    }
+
+                    currentUser = mAuth.getCurrentUser();
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("websiteurl", ed2.getText().toString());
+                    updates.put("username", ed3.getText().toString());
+                    updates.put("password", ed4.getText().toString());
+                    updates.put("note", ed5.getText().toString());
+                    updates.put("timemodified", System.currentTimeMillis());
+                    Log.v("FIREBASE", "STARTING");
+
+                    db_online.collection("users").document(currentUser.getUid()).collection("passwords").document(ed1.getText().toString())
+                            .update(updates)
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.v("FIREBASE", "FAILED");
+                                }
+                            })
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    ed1.setText("");
+                                    ed2.setText("");
+                                    ed3.setText("");
+                                    ed4.setText("");
+                                    ed5.setText("");
+                                    getActivity().onBackPressed();
+                                    Log.v("FIREBASE", "CREATED");
+                                }
+
+                            });
+
+
                 }
             }
+
         });
         add_entry_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,30 +218,57 @@ public class NewEntryFragment extends Fragment {
                     String notet = ed5.getText().toString();
                     String timet = Long.toString(System.currentTimeMillis());
 
-                    try {
-                        db.execSQL("INSERT INTO password values('" + entrynamet + "','" + websiteurlt + "','" + usernamet + "','" + passwordt + "','" + notet + "','" + timet + "')");
-                        ed1.setText("");
-                        ed2.setText("");
-                        ed3.setText("");
-                        ed4.setText("");
-                        ed5.setText("");
-                    } catch (Exception e) {
-                        Toast.makeText(getActivity(), "Duplicate Data", Toast.LENGTH_SHORT).show();
-                    }
+
+                    currentUser = mAuth.getCurrentUser();
+                    Map<String, Object> password = new HashMap<>();
+                    password.put("websiteurl", ed2.getText().toString());
+                    password.put("username", ed3.getText().toString());
+                    password.put("password", ed4.getText().toString());
+                    password.put("note", ed5.getText().toString());
+                    password.put("timemodified", System.currentTimeMillis());
+                    Log.v("FIREBASE", "STARTING");
+
+                    db_online.collection("users").document(currentUser.getUid()).collection("passwords").document(ed1.getText().toString())
+                            .set(password)
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.v("FIREBASE", "FAILED");
+                                }
+                            })
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    ed1.setText("");
+                                    ed2.setText("");
+                                    ed3.setText("");
+                                    ed4.setText("");
+                                    ed5.setText("");
+                                    getActivity().onBackPressed();
+                                    Log.v("FIREBASE", "CREATED");
+                                }
+
+                            });
+
+
                 }
             }
         });
         edit_entry_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ed1.setEnabled(true);
+                ed1.setEnabled(false);
                 ed2.setEnabled(true);
+                ed3.setEnabled(true);
                 ed4.setEnabled(true);
+                ed5.setEnabled(true);
                 save_changes_button.setVisibility(View.VISIBLE);
                 edit_entry_button.setVisibility(View.INVISIBLE);
                 add_entry_button.setVisibility(View.INVISIBLE);
             }
         });
+
+
         if (activityType.equals("add")) {
             ed1.setText("");
             ed2.setText("");
@@ -158,37 +284,32 @@ public class NewEntryFragment extends Fragment {
             edit_entry_button.setVisibility(View.INVISIBLE);
             save_changes_button.setVisibility(View.VISIBLE);
             add_entry_button.setVisibility(View.INVISIBLE);
-            Cursor c = db.rawQuery("SELECT * FROM password where entryname='" + typeIntent.getStringExtra("entry") + "'", null);
-            if (c.moveToFirst()) {
-                String entrynamet = c.getString(0);
-                String websiteurlt = c.getString(1);
-                String usernamet = c.getString(2);
-                String passwordt = c.getString(3);
-                String notet = c.getString(4);
-                ed1.setText(entrynamet);
-                ed2.setText(websiteurlt);
-                ed3.setText(usernamet);
-                ed4.setText(passwordt);
-                ed5.setText(notet);
-            } else {
-                ed1.setText("Unavailable");
-            }
+
+            String entrynamet = getActivity().getIntent().getStringExtra("entry");
+            String websiteurlt = getActivity().getIntent().getStringExtra("websiteurl");
+            String usernamet = getActivity().getIntent().getStringExtra("username");
+            String passwordt = getActivity().getIntent().getStringExtra("password");
+            String notet = getActivity().getIntent().getStringExtra("notes");
+            ed1.setText(entrynamet);
+            ed2.setText(websiteurlt);
+            ed3.setText(usernamet);
+            ed4.setText(passwordt);
+            ed5.setText(notet);
+            ed1.setEnabled(false);
+            ed2.requestFocus();
+
         } else if (activityType.equals("view")) {
-            Cursor c = db.rawQuery("SELECT * FROM password where entryname='" + typeIntent.getStringExtra("entry") + "'", null);
-            if (c.moveToFirst()) {
-                String entrynamet = c.getString(0);
-                String websiteurlt = c.getString(1);
-                String usernamet = c.getString(2);
-                String passwordt = c.getString(3);
-                String notet = c.getString(4);
-                ed1.setText(entrynamet);
-                ed2.setText(websiteurlt);
-                ed3.setText(usernamet);
-                ed4.setText(passwordt);
-                ed5.setText(notet);
-            } else {
-                ed1.setText("Unavailable");
-            }
+            String entrynamet = getActivity().getIntent().getStringExtra("entry");
+            String websiteurlt = getActivity().getIntent().getStringExtra("websiteurl");
+            String usernamet = getActivity().getIntent().getStringExtra("username");
+            String passwordt = getActivity().getIntent().getStringExtra("password");
+            String notet = getActivity().getIntent().getStringExtra("notes");
+            ed1.setText(entrynamet);
+            ed2.setText(websiteurlt);
+            ed3.setText(usernamet);
+            ed4.setText(passwordt);
+            ed5.setText(notet);
+
             ed1.setEnabled(false);
             ed2.setEnabled(false);
             ed3.setEnabled(false);
@@ -198,6 +319,8 @@ public class NewEntryFragment extends Fragment {
             add_entry_button.setVisibility(View.INVISIBLE);
             save_changes_button.setVisibility(View.INVISIBLE);
         }
+
+
         return view;
 
     }

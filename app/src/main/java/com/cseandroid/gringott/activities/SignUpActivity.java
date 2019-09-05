@@ -68,7 +68,7 @@ private FirebaseAuth mAuth;
         signup_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.setMessage("Doing something, please wait.");
+                dialog.setMessage("Adding you to the Gringott's family");
                 dialog.show();
                 if(fullname_ed.getText().toString()==""||phone_ed.getText().toString()==""||email_ed.getText().toString()==""||confirmpassword_ed.getText().toString()==""||password_ed.getText().toString()=="")
                 {
@@ -112,7 +112,11 @@ private FirebaseAuth mAuth;
                                 }
                                 else
                                 {
-
+                                    Toast.makeText(getApplicationContext(),"Weak Password",Toast.LENGTH_SHORT).show();
+                                    if (dialog.isShowing()) {
+                                        dialog.dismiss();
+                                    }
+                                    Log.v("FIREBASE","Failed");
                                 }
                             }
                         });

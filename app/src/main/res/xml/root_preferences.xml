@@ -1,0 +1,48 @@
+<!--
+  ~ Copyright 2018 The app Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory app:title="FingerPrint"
+        app:iconSpaceReserved="false">
+        <ListPreference
+            app:defaultValue="none"
+            app:entries="@array/fingerprint_entries"
+            app:entryValues="@array/fingerprint_values"
+            app:key="fingerprint"
+            app:iconSpaceReserved="false"
+            app:title="Choose Fingerprint Security Level"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Time-Based Security"
+        app:iconSpaceReserved="false">
+        <SwitchPreferenceCompat
+            app:key="timeout"
+            app:summaryOff="Turn on to Automatically log-off if inactive for a minute"
+            app:summaryOn="Turn off to Stay logged-in irrespective of time spent"
+            app:title="Automatic Log-off"
+            app:iconSpaceReserved="false"/>
+
+        <SwitchPreferenceCompat
+            app:key="closerem"
+            app:title="Remember Me even after logging out"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

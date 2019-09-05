@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#373640"
+    android:padding="10sp"
+    android:orientation="vertical"
+    tools:context=".activities.HelpActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="cursive"
+        android:text="How do you ensure data security and privacy?"
+        android:textColor="@color/colorAccent"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="All sensitive data, including passwords, is stored in a fully encrypted form. The data is encrypted in your browser using AES 256 algorithm and then transmitted in a fully encrypted form over SSL. Our data center holds only your encrypted data. Your passphrase acts as the encryption key, which is not stored anywhere. This passphrase must be supplied every time to decrypt your data. As a result, you get complete data privacy. No one, except you, can access your data."
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="cursive"
+        android:text="Where are your data centers hosted?"
+        android:textColor="@color/colorAccent"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="At present, our servers are hosted at the Unites States and Europe."
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="cursive"
+        android:text="The password I entered is correct. Why am I unable to log in?"
+        android:textColor="@color/colorAccent"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="The passphrase is case-sensitive. Check to be sure you haven't left caps lock on. If it's entered correctly, you should be logged in automatically. As you may be aware, we do not store or share your passphrase anywhere. It can be reset only by the registered user from the Vault interface. If you cannot log in and provide your old passphrase, there is no other way to reset it. "
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+</LinearLayout>
