@@ -49,9 +49,13 @@ ImageView qr_image;
         share_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String url="https://drive.google.com/open?id=1dH4yr6raOf1VN_GsQ8WbcBYCvzw7Gb_4";
-                Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse(url));
-                startActivity(intent);
+
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT,
+                        "Hey check out my app at: https://drive.google.com/open?id=1dH4yr6raOf1VN_GsQ8WbcBYCvzw7Gb_4");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
             }
         });
 

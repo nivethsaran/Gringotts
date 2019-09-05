@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                 TextView entrynametv = view.findViewById(R.id.list_site_name);
                 globalPosition = position;
                 globalEntryName = entrynametv.getText().toString();
-                Toast.makeText(getApplicationContext(), globalPosition + "", Toast.LENGTH_SHORT).show();
+
                 return false;
             }
         });
@@ -227,7 +227,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.popup_menu_edit) {
-            Toast.makeText(getApplicationContext(), globalPosition + " " + "edit" + "gmail", Toast.LENGTH_SHORT).show();
             final Intent intent = new Intent(getApplicationContext(), NewEntryActivity.class);
             db_online.collection("users").document(currentUser.getUid()).collection("passwords").document(globalEntryName)
                     .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -253,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } else if (item.getItemId() == R.id.popup_menu_delete) {
-            Toast.makeText(getApplicationContext(), globalPosition + " " + "delete", Toast.LENGTH_SHORT).show();
+
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Confirmation");
             builder.setMessage("Do you really want to delete the given entry");
@@ -305,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         } else {
             Toast.makeText(getApplicationContext(), "Press back again to signout", Toast.LENGTH_SHORT).show();
+            mAuth.signOut();
         }
     }
 
