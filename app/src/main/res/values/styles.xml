@@ -24,10 +24,23 @@
 
     <style name="AlertDialogCustom" parent="@android:style/Theme.Dialog">
         <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:typeface">monospace</item>
+        <item name="android:typeface">normal</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:layout_marginTop">0sp</item>
+        <item name="android:layout_marginBottom">0sp</item>
         <item name="android:background">@color/bgColorMain</item>
         <item name="android:buttonStyle">@drawable/button_shape</item>
-        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="MyProgressDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:typeface">normal</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:layout_marginTop">0sp</item>
+        <item name="android:layout_marginBottom">0sp</item>
+        <item name="android:background">@color/bgColorMain</item>
     </style>
 
 

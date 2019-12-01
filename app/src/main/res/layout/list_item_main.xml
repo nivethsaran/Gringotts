@@ -8,8 +8,9 @@
         android:layout_width="48sp"
         android:layout_height="48sp"
         android:layout_gravity="center_vertical"
+        android:layout_marginRight="5sp"
         android:id="@+id/list_image_view"
-        android:src="@drawable/baseline_settings_black_18dp"/>
+        android:src="@drawable/fingerprint"/>
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

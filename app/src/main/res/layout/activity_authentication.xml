@@ -50,16 +50,33 @@
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword" />
-    <CheckBox
-        android:id="@+id/show_password"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_marginHorizontal="20sp"
         android:paddingHorizontal="5sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show Password"
-        android:textColor="@color/colorText"
-        android:layout_gravity="start"
-        android:gravity="center_vertical"/>
+        android:gravity="center"
+        android:layout_height="wrap_content">
+        <CheckBox
+            android:id="@+id/show_password"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show Password"
+            android:layout_weight="1"
+            android:textColor="@color/colorText"
+            android:layout_gravity="start|center_vertical"
+            />
+        <CheckBox
+            android:id="@+id/remember_me"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Remember Me"
+
+            android:textColor="@color/colorText"
+            android:layout_gravity="end|center_vertical" />
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"

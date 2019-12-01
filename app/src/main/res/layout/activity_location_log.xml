@@ -25,11 +25,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/colorText" />
-
-    <ListView
-        android:id="@+id/listv"
-        android:background="@color/bgColorMain"
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:id="@+id/swipeRefesh"
+        android:layout_height="wrap_content">
+
+        <ListView
+            android:id="@+id/location_listView"
+            android:background="@color/bgColorMain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/progressBarMain"
+        android:layout_height="wrap_content">
+
+    </ProgressBar>
+    <ImageView
+        android:layout_width="150sp"
+        android:layout_height="150sp"
+        android:layout_gravity="center"
+        android:id="@+id/noresult_imv">
+
+    </ImageView>
+</FrameLayout>
+
+
 
 </LinearLayout>

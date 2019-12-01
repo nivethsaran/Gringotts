@@ -2,6 +2,7 @@ package com.cseandroid.gringott.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -47,7 +48,7 @@ private FirebaseAuth mAuth;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        dialog = new ProgressDialog(SignUpActivity.this);
+        dialog = new ProgressDialog(new ContextThemeWrapper(SignUpActivity.this, R.style.MyProgressDialog));
         fullname_ed=findViewById(R.id.fullname_edittext);
         email_ed=findViewById(R.id.email_edittext);
         password_ed=findViewById(R.id.password_edittext);

@@ -5,14 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
-<ProgressBar
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/progressBarMain"
-    android:layout_gravity="center"
-    android:backgroundTint="@color/colorAccent"
-    android:visibility="invisible"
-    />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -49,7 +42,22 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/progressBarMain"
+                android:layout_gravity="center"
+                />
+            <ImageView
+                android:layout_width="128sp"
+                android:layout_height="128sp"
+                android:src="@drawable/search"
+                android:layout_gravity="center"
+                android:id="@+id/noresult_imv"
+                android:visibility="gone"
+                >
 
+            </ImageView>
             <!--TODO Add swipe refresh layout here-->
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:layout_width="match_parent"

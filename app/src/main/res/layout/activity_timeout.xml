@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/bgColorMain"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".activities.TimeoutActivity">
+
+    <ImageView
+        android:layout_width="230dp"
+        android:layout_height="230sp"
+        android:src="@drawable/wait" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorAccent"
+        android:layout_margin="5sp"
+
+        android:layout_gravity="center"
+        android:text="Session Expired Login Again"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_loginagain"
+        android:paddingHorizontal="10sp"
+        android:text="Login Again"
+        android:background="@drawable/button_shape"/>
+</LinearLayout>

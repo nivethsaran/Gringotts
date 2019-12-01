@@ -1,18 +1,24 @@
 package com.cseandroid.gringott.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.Image;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -21,6 +27,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
@@ -28,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cseandroid.gringott.R;
+import com.cseandroid.gringott.crypto.AES;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -65,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     String globalEntryName;
 
 
-    int logo[] = {R.drawable.padlock,};
+    int logo[] = {R.drawable.fingerprint,};
     String from[] = {"entries", "usernames", "logo"};
     int to[] = {R.id.list_site_name, R.id.list_user_name, R.id.list_image_view};
 
@@ -81,10 +89,16 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db_online = FirebaseFirestore.getInstance();
         currentUser = mAuth.getCurrentUser();
-
-        password_listview = findViewById(R.id.lv_password_list);
-        new LoadTask().execute();
-
+        if(currentUser==null)
+        {
+            Intent intent=new Intent(MainActivity.this,AuthenticationActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }else {
+            password_listview = findViewById(R.id.lv_password_list);
+            progressBarMain = findViewById(R.id.progressBarMain);
+            new LoadTask().execute();
+        }
         super.onStart();
     }
 
@@ -98,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
         password_listview = findViewById(R.id.lv_password_list);
         progressBarMain = findViewById(R.id.progressBarMain);
-        swipeRefreshLayout=findViewById(R.id.swipeRefesh);
+        swipeRefreshLayout = findViewById(R.id.swipeRefesh);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -113,11 +127,9 @@ public class MainActivity extends AppCompatActivity {
         Log.v("lifecycle", "onCreateView");
 
         welcome_textview = findViewById(R.id.welcome_messgae_textview);
-        if(userName!=null){
+        if (userName != null) {
             welcome_textview.setText("Welcome " + userName);
-        }
-        else
-        {
+        } else {
             db_online.collection("users").document(currentUser.getUid()).get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
@@ -132,26 +144,28 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-               final TextView entrynametv = view.findViewById(R.id.list_site_name);
+                final TextView entrynametv = view.findViewById(R.id.list_site_name);
                 final Intent intent = new Intent(getApplicationContext(), NewEntryActivity.class);
                 db_online.collection("users").document(currentUser.getUid()).collection("passwords").document(entrynametv.getText().toString())
                         .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                        if(task.isSuccessful())
-                        {
-                            String entryname=entrynametv.getText().toString();
-                            String websiteurl=task.getResult().getData().get("websiteurl").toString();
-                            String username=task.getResult().getData().get("username").toString();
-                            String password=task.getResult().getData().get("password").toString();
-                            String notes=task.getResult().getData().get("note").toString();
+                        if (task.isSuccessful()) {
+                            String entryname = entrynametv.getText().toString();
+                            String websiteurl = task.getResult().getData().get("websiteurl").toString();
+                            String username = task.getResult().getData().get("username").toString();
+                            String password = task.getResult().getData().get("password").toString();
+                            String notes = task.getResult().getData().get("note").toString();
+                            String timemodified = task.getResult().getData().get("timemodified").toString();
                             intent.putExtra("type", "view");
                             intent.putExtra("entry", entryname);
                             intent.putExtra("websiteurl", websiteurl);
                             intent.putExtra("username", username);
-                            intent.putExtra("password", password);
+                            intent.putExtra("password", new AES().decrypt(password));
                             intent.putExtra("notes", notes);
+                            intent.putExtra("timemodified", timemodified);
                             startActivity(intent);
                         }
 
@@ -230,22 +244,25 @@ public class MainActivity extends AppCompatActivity {
             final Intent intent = new Intent(getApplicationContext(), NewEntryActivity.class);
             db_online.collection("users").document(currentUser.getUid()).collection("passwords").document(globalEntryName)
                     .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                    if(task.isSuccessful())
-                    {
-                        String entryname=globalEntryName;
-                        String websiteurl=task.getResult().getData().get("websiteurl").toString();
-                        String username=task.getResult().getData().get("username").toString();
-                        String password=task.getResult().getData().get("password").toString();
-                        String notes=task.getResult().getData().get("note").toString();
+                    if (task.isSuccessful()) {
+                        String entryname = globalEntryName;
+                        String websiteurl = task.getResult().getData().get("websiteurl").toString();
+                        String username = task.getResult().getData().get("username").toString();
+                        String password = task.getResult().getData().get("password").toString();
+                        String notes = task.getResult().getData().get("note").toString();
+                        String timemodified = task.getResult().getData().get("timemodified").toString();
                         intent.putExtra("type", "edit");
                         intent.putExtra("entry", entryname);
                         intent.putExtra("websiteurl", websiteurl);
                         intent.putExtra("username", username);
-                        intent.putExtra("password", password);
+                        intent.putExtra("password", new AES().decrypt(password));
                         intent.putExtra("notes", notes);
+                        intent.putExtra("timemodified", timemodified);
+
                         startActivity(intent);
                     }
 
@@ -253,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
             });
         } else if (item.getItemId() == R.id.popup_menu_delete) {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.AlertDialogCustom));
             builder.setTitle("Confirmation");
             builder.setMessage("Do you really want to delete the given entry");
             builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
@@ -316,10 +333,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-
-
             super.onPreExecute();
             progressBarMain.setVisibility(View.VISIBLE);
+            password_listview.setVisibility(View.VISIBLE);
             db_online.collection("users").document(currentUser.getUid()).collection("passwords")
                     .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
@@ -332,7 +348,19 @@ public class MainActivity extends AppCompatActivity {
 
                         }
 //                        Map<String, Object> result_map = documentSnapshot.getData();
-
+                        if(docsNameList.size()==0)
+                        {
+                            progressBarMain.setVisibility(View.INVISIBLE);
+                            swipeRefreshLayout.setRefreshing(false);
+                            ImageView noresultimv=findViewById(R.id.noresult_imv);
+                            noresultimv.setVisibility(View.VISIBLE);
+                            password_listview.setVisibility(View.INVISIBLE);
+                        }
+                        else
+                        {
+                            ImageView noresultimv=findViewById(R.id.noresult_imv);
+                            noresultimv.setVisibility(View.INVISIBLE);
+                        }
 
                         for (final String docName : docsNameList) {
                             db_online.collection("users").document(currentUser.getUid()).collection("passwords").document(docName)

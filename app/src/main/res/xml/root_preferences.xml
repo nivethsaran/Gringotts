@@ -36,13 +36,6 @@
             app:summaryOn="Turn off to Stay logged-in irrespective of time spent"
             app:title="Automatic Log-off"
             app:iconSpaceReserved="false"/>
-
-        <SwitchPreferenceCompat
-            app:key="closerem"
-            app:title="Remember Me even after logging out"
-            app:defaultValue="false"
-            app:iconSpaceReserved="false"/>
-
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -80,7 +80,16 @@ public class SettingsActivity extends AppCompatActivity {
         changePinToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changePinLayout.setVisibility(View.VISIBLE);
+                if(changePinLayout.getVisibility()==View.VISIBLE)
+                {
+                    changePinLayout.setVisibility(View.GONE);
+                    changePinToggle.setText("Click Here to Change Pin");
+                }
+                else{
+                    changePinLayout.setVisibility(View.VISIBLE);
+                    changePinToggle.setText("Collapse Dialog");
+                }
+
             }
         });
 

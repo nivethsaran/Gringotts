@@ -1,20 +1,27 @@
 package com.cseandroid.gringott.activities;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -26,13 +33,16 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.cseandroid.gringott.R;
+import com.cseandroid.gringott.crypto.AES;
 
 public class PinActivity extends AppCompatActivity {
     EditText edp1, edp2, edp3, edp4;
     TextView tv_command, clear_tv, error_tv;
     Button save, go;
     Vibrator vibrator;
+    TextView forgotpintv;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +52,8 @@ public class PinActivity extends AppCompatActivity {
         edp2 = findViewById(R.id.edp2);
         edp3 = findViewById(R.id.edp3);
         edp4 = findViewById(R.id.edp4);
+        forgotpintv=findViewById(R.id.forgotpin_textview);
+
 
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
@@ -157,12 +169,17 @@ public class PinActivity extends AppCompatActivity {
                     SharedPreferences.Editor edit = sp.edit();
                     edit.putString("pin", pin);
                     edit.apply();
-                    finish();
-                    startActivity(getIntent());
+                    if(sp.getString("code","XXXXXXXXXXXX").equals("XXXXXXXXXXXX")){
+                    Intent intent=new Intent(PinActivity.this,ResetPinActivity.class);
+                    intent.putExtra("type","showcode");
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);}
+                    else
+                    {
+                        Intent intent=new Intent(PinActivity.this,AuthenticationActivity.class);
+                        startActivity(intent);}
+                    }
                 }
-
-
-            }
         });
 
         go.setOnClickListener(new View.OnClickListener() {
@@ -191,6 +208,16 @@ public class PinActivity extends AppCompatActivity {
                     edp4.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shake));
                     error_tv.setVisibility(View.VISIBLE);
                 }
+            }
+        });
+
+        forgotpintv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(PinActivity.this,ResetPinActivity.class);
+                intent.putExtra("type","forgotpin");
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             }
         });
 

@@ -3,12 +3,11 @@
 
     <item>
         <shape android:shape="oval">
-
-
-
-        <size android:width="16dp"
-            android:height="16dp"/>
-    </shape>
+            <size android:width="72sp"
+                android:height="72sp"/>
+            <stroke android:color="@color/colorAccent"
+                android:width="0.5sp"/>
+        </shape>
 
     </item>
 
